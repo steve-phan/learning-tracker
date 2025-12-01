@@ -1,0 +1,5 @@
+.progress-card { background: #e9ecef; padding: 12px; border-radius: 6px; margin-bottom: 12px; }
+.progress-line { display:flex; flex-direction:column; gap:6px; }
+.progress-text { font-weight:600; font-size:0.95rem; color:#212529; }
+.progress-bar-container { height:8px; background:#ccc; border-radius:999px; overflow:hidden; }
+.progress-bar { height:100%; background:#28a745; transition: width 0.3s ease; }

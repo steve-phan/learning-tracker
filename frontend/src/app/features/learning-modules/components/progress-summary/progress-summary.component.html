@@ -1,0 +1,8 @@
+<div *ngIf="summary" class="progress-card">
+  <div class="progress-line">
+    <div class="progress-text">{{ summary.completed }} of {{ summary.total }} completed — {{ summary.percentage }}%</div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" [style.width.%]="summary.percentage"></div>
+    </div>
+  </div>
+</div>

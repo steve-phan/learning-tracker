@@ -1,0 +1,19 @@
+<div class="module-card" [class.completed]="module.completed">
+  <div class="module-header">
+    <h3 class="module-title">{{ module.title }}</h3>
+    <span class="category-badge" [attr.data-category]="module.category">{{ module.category }}</span>
+  </div>
+
+  <div class="module-footer">
+    <div class="duration">⏱️ {{ module.estimatedMinutes }} min</div>
+    <label class="checkbox-wrapper">
+      <input
+        type="checkbox"
+        [checked]="module.completed"
+        (change)="onToggle()"
+        aria-label="Mark module complete"
+      />
+      <span class="checkbox-box" aria-hidden="true"></span>
+    </label>
+  </div>
+</div>
