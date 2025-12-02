@@ -20,16 +20,15 @@ export class LearningModuleService {
   //1. Single store
   private readonly modulesSubject = new BehaviorSubject<LearningModule[]>([]);
   readonly modules$ = this.modulesSubject.asObservable();
+  readonly totalPages$ = new BehaviorSubject<number>(0);
 
   //2. Keep last params
   private lastParams: LearningModulesQueryParams = {};
 
   //3. Fetch into the store
   load(params: LearningModulesQueryParams = {}): Observable<LearningModule[]> {
-    this.lastParams = params;
-    return this.fetchModules(params).pipe(
-      tap((modules) => this.modulesSubject.next(modules))
-    );
+    this.lastParams = { ...this.lastParams, ...params };
+    return this.fetchModules(this.lastParams);
   }
 
   //4. Backwards compatibility
@@ -117,8 +116,14 @@ export class LearningModuleService {
         params: this.toHttpParams(params),
       })
       .pipe(
+        tap((response) =>
+          this.totalPages$.next(
+            Math.ceil(response.total / (params.pageSize || 10))
+          )
+        ),
         map((response) => this.sortModules(response.modules)),
-        tap((modules) => this.modulesSubject.next(modules)), //TODO: check keep cachec for global categories only????
+        tap((modules) => this.modulesSubject.next(modules)),
+
         shareReplay(1),
         catchError(this.handleError)
       );

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 import { LearningModule } from 'src/app/learning-module/types/learning-module.interface';
 import {
-  LearningModuleDto,
   LearningModuleQueryParamsDto,
   LearningModulesReponseDto,
   UpdateLearningModuleDto,

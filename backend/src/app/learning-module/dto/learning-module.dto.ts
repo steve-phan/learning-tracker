@@ -1,13 +1,17 @@
-import { Optional } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
   IsEnum,
+  IsInt,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
+  Min,
 } from 'class-validator';
-
 import { Category } from 'src/app/learning-module/types/learning-module.interface';
 
 export class UpdateLearningModuleDto {
@@ -32,22 +36,36 @@ export class LearningModuleDto {
   completed: boolean;
 }
 
-// query params dto, like for filtering by category could be added here in the future
 export class LearningModuleQueryParamsDto {
+  @IsOptional()
+  @Transform(({ value }) => (value === '' ? undefined : value))
   @IsEnum(Category)
   category?: Category;
 
-  @Optional()
-  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === undefined || value === null || value === ''
+      ? undefined
+      : Number(value),
+  )
+  @IsInt()
+  @Min(0)
   page?: number;
 
-  @Optional()
-  @IsNumber()
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === undefined || value === null || value === ''
+      ? undefined
+      : Number(value),
+  )
+  @IsInt()
+  @Min(1)
   pageSize?: number;
 }
 
 export class LearningModulesReponseDto {
-  @IsNumber() total: number;
+  @IsNumber()
+  total: number;
 
   @IsArray()
   modules: LearningModuleDto[];
