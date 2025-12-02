@@ -93,16 +93,6 @@ export class LearningModuleService {
       );
   }
 
-  refresh(params: LearningModulesQueryParams): void {
-    this.reload$.next(params);
-  }
-
-  updateModule(id: string, completed: boolean): Observable<LearningModule> {
-    return this.http
-      .patch<LearningModule>(`${API_BASE_URL}/modules/${id}`, { completed })
-      .pipe(catchError(this.handleError));
-  }
-
   private handleError(error: any) {
     console.error('An error occurred:', error);
     return throwError(() => error || 'Server Error');

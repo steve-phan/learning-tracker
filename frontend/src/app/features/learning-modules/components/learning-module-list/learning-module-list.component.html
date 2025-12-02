@@ -12,7 +12,6 @@
         <select
           id="category-select"
           (change)="onCategoryChange($event)"
-          [value]="selectedCategory$ | async"
           aria-label="Filter modules by category"
         >
           <option value="">All categories</option>

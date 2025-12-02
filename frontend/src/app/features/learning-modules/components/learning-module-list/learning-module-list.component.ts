@@ -35,11 +35,6 @@ export class LearningModuleListComponent implements OnInit {
   // LearningModuleService
   private readonly learningModuleService = inject(LearningModuleService);
 
-  // Users's selected category
-  readonly selectedCategory$ = new BehaviorSubject<
-    LearningModuleCategory | undefined
-  >(undefined);
-
   // Categories observable
   readonly categories = this.learningModuleService.categories;
 
