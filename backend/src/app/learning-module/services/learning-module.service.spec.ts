@@ -53,7 +53,7 @@ describe('LearningModuleService', () => {
     it('should return an array of learning modules', () => {
       mockRepository.findAll.mockReturnValue(mockModules);
 
-      const result = service.findAll();
+      const result = service.findAll({});
 
       expect(result).toEqual(mockModules);
       expect(repository.findAll).toHaveBeenCalled();
@@ -62,7 +62,7 @@ describe('LearningModuleService', () => {
     it('should return filtered results from repository when it returns subset', () => {
       mockRepository.findAll.mockReturnValue([mockModules[0]]);
 
-      const result = service.findAll();
+      const result = service.findAll({});
 
       expect(result).toEqual([mockModules[0]]);
       expect(repository.findAll).toHaveBeenCalled();

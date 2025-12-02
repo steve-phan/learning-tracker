@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import {
-  LearningModuleDto,
-  UpdateLearningModuleDto,
+  LearningModuleQueryParamsDto,
+  LearningModulesReponseDto,
 } from '../dto/learning-module.dto';
 import { LearningModuleRepository } from '../repositories/learning-module.repository';
 import { LearningModule } from 'src/app/learning-module/types/learning-module.interface';
@@ -13,8 +13,8 @@ export class LearningModuleService {
     private readonly learningModuleRepository: LearningModuleRepository,
   ) {}
 
-  findAll(): LearningModuleDto[] {
-    return this.learningModuleRepository.findAll();
+  findAll(params: LearningModuleQueryParamsDto): LearningModulesReponseDto {
+    return this.learningModuleRepository.findAll(params);
   }
 
   update(id: string, updateLearningModuleDto): LearningModule {

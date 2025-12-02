@@ -9,33 +9,48 @@
     <div class="filter-container">
       <label for="category-select" class="filter-label">Category</label>
       <div class="select-wrapper">
-        <select id="category-select" (change)="onCategoryChange($event)" [value]="selectedCategory || ''" aria-label="Filter modules by category">
+        <select
+          id="category-select"
+          (change)="onCategoryChange($event)"
+          [value]="selectedCategory$ | async"
+          aria-label="Filter modules by category"
+        >
           <option value="">All categories</option>
-          <option *ngFor="let c of categories$ | async" [value]="c">{{ c }}</option>
+          <option *ngFor="let c of categories" [value]="c">
+            {{ c }}
+          </option>
         </select>
       </div>
     </div>
   </div>
 
   <!-- Progress Summary -->
-  <app-progress-summary [summary]="(progressSummary$ | async)"></app-progress-summary>
+  <app-progress-summary
+    [summary]="progressSummary$ | async"
+  ></app-progress-summary>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading">
+  <div *ngIf="loading$ | async" class="loading">
     <div class="spinner"></div>
     <p>Loading modules...</p>
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error" class="error">
+  <div *ngIf="error$ | async" class="error">
     <span class="error-icon">⚠️</span>
-    <span>{{ error }}</span>
+    <span>{{ error$ | async }}</span>
   </div>
 
   <!-- Module List -->
-  <div *ngIf="!(loading || error)" class="module-list">
+  <div *ngIf="!(loading$ | async) && !(error$ | async)" class="module-list">
     <ng-container *ngFor="let module of modules$ | async">
-      <app-module-card [module]="module" (toggleCompletion)="onToggleCompletion($event.id, $event.currentStatus)"></app-module-card>
+      <app-module-card
+        [module]="module"
+        (toggleCompletion)="onToggleCompletion($event.id)"
+      ></app-module-card>
     </ng-container>
   </div>
+
+  <!-- Module Pagination -->
+  <app-pagination></app-pagination>
 </div>

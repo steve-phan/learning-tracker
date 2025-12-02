@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { LearningModule } from 'src/app/learning-module/types/learning-module.interface';
-import { UpdateLearningModuleDto } from '../dto/learning-module.dto';
+import {
+  LearningModuleDto,
+  LearningModuleQueryParamsDto,
+  LearningModulesReponseDto,
+  UpdateLearningModuleDto,
+} from '../dto/learning-module.dto';
 import { initialLearningModules } from '../__MOCK_DATA__/seed';
 
 @Injectable()
@@ -12,13 +17,25 @@ export class LearningModuleRepository {
     this.learningModules = initialLearningModules;
   }
 
-  findAll(category?: string): LearningModule[] {
+  findAll({
+    category,
+    page = 0,
+    pageSize = 10,
+  }: LearningModuleQueryParamsDto): LearningModulesReponseDto {
+    let result = [...this.learningModules];
+
     if (category) {
-      return this.learningModules.filter(
-        (module) => module.category === category,
-      );
+      result = result.filter((lm) => lm.category === category);
     }
-    return this.learningModules;
+
+    const total = result.length;
+    const startIndex = page * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    return {
+      total,
+      modules: result.slice(startIndex, endIndex),
+    };
   }
 
   findOne(id: string): LearningModule {
