@@ -62,7 +62,8 @@ describe('LearningModuleController', () => {
         controller.update('nope', { completed: true });
         // should not reach
         expect(false).toBeTruthy();
-      } catch (err) {
+      } catch (err: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(err.status).toBeDefined();
       }
     });

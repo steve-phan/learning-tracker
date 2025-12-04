@@ -5,7 +5,6 @@ import { Category, LearningModule } from '../types/learning-module.interface';
 
 describe('LearningModuleService', () => {
   let service: LearningModuleService;
-  let repository: LearningModuleRepository;
 
   const mockModules: LearningModule[] = [
     {
@@ -42,7 +41,6 @@ describe('LearningModuleService', () => {
     }).compile();
 
     service = module.get<LearningModuleService>(LearningModuleService);
-    repository = module.get<LearningModuleRepository>(LearningModuleRepository);
   });
 
   it('should be defined', () => {
@@ -56,7 +54,7 @@ describe('LearningModuleService', () => {
       const result = service.findAll({});
 
       expect(result).toEqual(mockModules);
-      expect(repository.findAll).toHaveBeenCalled();
+      expect(mockRepository.findAll).toHaveBeenCalled();
     });
 
     it('should return filtered results from repository when it returns subset', () => {
@@ -65,7 +63,7 @@ describe('LearningModuleService', () => {
       const result = service.findAll({});
 
       expect(result).toEqual([mockModules[0]]);
-      expect(repository.findAll).toHaveBeenCalled();
+      expect(mockRepository.findAll).toHaveBeenCalled();
     });
   });
 
@@ -80,7 +78,7 @@ describe('LearningModuleService', () => {
       const result = service.update(id, updateDto);
 
       expect(result).toEqual(updatedModule);
-      expect(repository.update).toHaveBeenCalledWith(id, updateDto);
+      expect(mockRepository.update).toHaveBeenCalledWith(id, updateDto);
     });
 
     it('should throw if module not found', () => {
@@ -93,7 +91,7 @@ describe('LearningModuleService', () => {
       expect(() => service.update(id, updateDto)).toThrow(
         'Learning module not found',
       );
-      expect(repository.update).toHaveBeenCalledWith(id, updateDto);
+      expect(mockRepository.update).toHaveBeenCalledWith(id, updateDto);
     });
   });
 });
