@@ -1,0 +1,21 @@
+<div class="pagination" *ngIf="totalPages$ | async">
+  <button
+    class="nav-button"
+    (click)="onPreviousPage()"
+    [disabled]="page === 1"
+    aria-label="Previous page"
+  >
+    ‹ Previous
+  </button>
+
+  <span class="page-info">Page {{ page }} of {{ totalPages$ | async }}</span>
+
+  <button
+    class="nav-button"
+    (click)="onNextPage()"
+    [disabled]="page >= (totalPages$ | async)!"
+    aria-label="Next page"
+  >
+    Next ›
+  </button>
+</div>

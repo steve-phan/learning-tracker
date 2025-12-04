@@ -12,3 +12,14 @@ export interface LearningModule {
   estimatedMinutes: number;
   completed: boolean;
 }
+
+export interface LearningModulesResponse {
+  total: number;
+  modules: LearningModule[];
+}
+
+export interface LearningModulesQueryParams {
+  category?: LearningModuleCategory;
+  page?: number;
+  pageSize?: number;
+}

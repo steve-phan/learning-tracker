@@ -6,11 +6,13 @@ import {
   HttpStatus,
   Param,
   Patch,
+  Query,
 } from '@nestjs/common';
 
 import { LearningModuleService } from '../services/learning-module.service';
 import {
-  LearningModuleDto,
+  LearningModuleQueryParamsDto,
+  LearningModulesReponseDto,
   UpdateLearningModuleDto,
 } from '../dto/learning-module.dto';
 
@@ -19,9 +21,10 @@ export class LearningModuleController {
   constructor(private readonly learningModuleService: LearningModuleService) {}
 
   @Get()
-  findAll(): LearningModuleDto[] {
-    //TODO: pagination, filtering
-    return this.learningModuleService.findAll();
+  findAll(
+    @Query() params: LearningModuleQueryParamsDto,
+  ): LearningModulesReponseDto {
+    return this.learningModuleService.findAll(params);
   }
 
   @Patch(':id')
@@ -32,6 +35,7 @@ export class LearningModuleController {
     try {
       return this.learningModuleService.update(id, updateLearningModuleDto);
     } catch (error) {
+      console.error(error);
       throw new HttpException(
         'Learning module not found',
         HttpStatus.NOT_FOUND,

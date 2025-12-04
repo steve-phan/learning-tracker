@@ -37,7 +37,7 @@ describe('LearningModuleController', () => {
   describe('findAll', () => {
     it('returns modules from service', () => {
       mockService.findAll.mockReturnValue(mockModules);
-      const result = controller.findAll();
+      const result = controller.findAll({});
       expect(result).toEqual(mockModules);
       expect(mockService.findAll).toHaveBeenCalled();
     });
