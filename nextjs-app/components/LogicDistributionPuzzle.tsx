@@ -95,18 +95,106 @@ function evaluateCondition(
 }
 
 /**
- * Evaluate a simple mathematical expression
+ * Evaluate a simple mathematical expression safely
+ * Only supports basic arithmetic: +, -, *, /
  */
 function evaluateExpression(expr: string): number {
   // Replace × with *
-  expr = expr.replace(/×/g, "*");
-  // Simple eval for basic math (in a real app, use a proper expression parser)
-  // This is safe as we control the input
+  expr = expr.replace(/×/g, "*").trim();
+  
+  // Remove all spaces
+  expr = expr.replace(/\s/g, "");
+  
+  // Validate that expression only contains numbers and allowed operators
+  if (!/^[\d+\-*/().\s]+$/.test(expr)) {
+    return 0;
+  }
+  
   try {
-    return Function('"use strict"; return (' + expr + ")")();
+    // Parse and evaluate using a simple recursive descent parser
+    const tokens = tokenize(expr);
+    return parseExpression(tokens);
   } catch {
     return 0;
   }
+}
+
+/**
+ * Tokenize a mathematical expression
+ */
+function tokenize(expr: string): string[] {
+  const tokens: string[] = [];
+  let currentNumber = "";
+  
+  for (let i = 0; i < expr.length; i++) {
+    const char = expr[i];
+    if (char >= "0" && char <= "9" || char === ".") {
+      currentNumber += char;
+    } else {
+      if (currentNumber) {
+        tokens.push(currentNumber);
+        currentNumber = "";
+      }
+      if (char !== " ") {
+        tokens.push(char);
+      }
+    }
+  }
+  
+  if (currentNumber) {
+    tokens.push(currentNumber);
+  }
+  
+  return tokens;
+}
+
+/**
+ * Simple expression parser
+ */
+function parseExpression(tokens: string[]): number {
+  let result = parseTerm(tokens);
+  
+  while (tokens.length > 0 && (tokens[0] === "+" || tokens[0] === "-")) {
+    const op = tokens.shift()!;
+    const term = parseTerm(tokens);
+    result = op === "+" ? result + term : result - term;
+  }
+  
+  return result;
+}
+
+/**
+ * Parse a term (multiplication and division)
+ */
+function parseTerm(tokens: string[]): number {
+  let result = parseFactor(tokens);
+  
+  while (tokens.length > 0 && (tokens[0] === "*" || tokens[0] === "/")) {
+    const op = tokens.shift()!;
+    const factor = parseFactor(tokens);
+    result = op === "*" ? result * factor : result / factor;
+  }
+  
+  return result;
+}
+
+/**
+ * Parse a factor (number or parenthesized expression)
+ */
+function parseFactor(tokens: string[]): number {
+  const token = tokens.shift();
+  
+  if (!token) {
+    return 0;
+  }
+  
+  if (token === "(") {
+    const result = parseExpression(tokens);
+    tokens.shift(); // Remove closing )
+    return result;
+  }
+  
+  return parseFloat(token) || 0;
 }
 
 /**
@@ -296,7 +384,8 @@ export default function LogicDistributionPuzzle({
     const [activeSource, activeItem] = activeId.split(":");
     const [overSource, overEntity] = overId.split(":");
 
-    if (overSource === "entity") {
+    // Only handle drops onto entity plates from storage
+    if (overSource === "entity" && activeSource === "storage") {
       // Dropped onto an entity plate
       const targetAssignment = assignments.find((a) => a.entity === overEntity);
       if (!targetAssignment || targetAssignment.fixed) return;
@@ -311,15 +400,6 @@ export default function LogicDistributionPuzzle({
             ...a,
             items: [...a.items, activeItem],
           };
-        }
-        // Remove from source if it was from another entity
-        if (activeSource === "entity" && a.entity === activeSource) {
-          const itemIndex = a.items.indexOf(activeItem);
-          if (itemIndex > -1 && !a.fixed) {
-            const newItems = [...a.items];
-            newItems.splice(itemIndex, 1);
-            return { ...a, items: newItems };
-          }
         }
         return a;
       });
